@@ -1,10 +1,8 @@
-# 점심시간 참가 여부 시스템 (Streamlit)
-
 import streamlit as st
 from datetime import datetime
 import pandas as pd
 
-# --- 상태 관리 변수 초기화 ---
+# --- 상태 초기화 ---
 if 'is_admin' not in st.session_state:
     st.session_state['is_admin'] = False
 if 'submitted' not in st.session_state:
@@ -22,9 +20,10 @@ if 'partners' not in st.session_state:
 if 'attendance' not in st.session_state:
     st.session_state['attendance'] = []
 
-# --- 관리자 인증 ---
+# --- 관리자 메뉴 ---
 with st.sidebar:
-    st.markdown("## 관리자 메뉴")
+    st.markdown("## 🛠️ 관리자 메뉴")
+
     if not st.session_state['is_admin']:
         password = st.text_input("비밀번호", type="password")
         if password == "04281202":
@@ -79,7 +78,7 @@ with st.sidebar:
                 mime='text/csv'
             )
 
-# --- 사용자 입력 ---
+# --- 사용자 입력 (비관리자) ---
 if not st.session_state['is_admin']:
     if not st.session_state['submitted']:
         name = st.text_input("성함을 입력해주세요:")
@@ -93,11 +92,8 @@ if not st.session_state['is_admin']:
                 check1 = st.checkbox("점심시간 전 (1:00~1:10)")
             with col2:
                 check2 = st.checkbox("점심시간 후 (1:30~1:40)")
-
-            if check1:
-                times.append("전")
-            if check2:
-                times.append("후")
+            if check1: times.append("전")
+            if check2: times.append("후")
         else:
             reason = st.text_area("불참 사유를 입력해주세요")
 
@@ -117,6 +113,7 @@ if not st.session_state['is_admin']:
 # --- 참가자 현황 ---
 if not st.session_state['is_admin'] and '전' in st.session_state['assignments']:
     st.markdown("## ✅ 조 편성 현황")
+
     for time in ['전', '후']:
         if time in st.session_state['assignments']:
             st.markdown(f"### 점심시간 {time}")
@@ -154,7 +151,7 @@ if not st.session_state['is_admin'] and '전' in st.session_state['assignments']
                     st.session_state['scores'][f"{court}_{time}"] = score
                     st.success("🏁 경기 종료: 스코어 제출 완료")
 
-    # --- 대기 인원 표시 ---
+    # 대기 인원
     if st.session_state['assignments'].get('대기'):
         st.markdown("### ⏳ 대기 인원")
         for person in st.session_state['assignments']['대기']:
@@ -174,19 +171,3 @@ if not st.session_state['is_admin'] and not st.session_state['assignments']:
         st.markdown("### 점심시간 후")
         for name in back:
             st.write(f"- {name}")
-# ① Git 초기화
-git init
-
-# ② 모든 파일 스테이징
-git add .
-
-# ③ 커밋
-git commit -m "Initial commit"
-
-# ④ GitHub 원격 저장소 연결 (여기서 <YOUR_URL>은 네가 방금 만든 GitHub 저장소 주소야)
-git remote add origin https://github.com/너의아이디/저장소이름.git
-
-# 예: git remote add origin https://github.com/seoyunjang/lunch-leftover-predictor.git
-
-# ⑤ GitHub에 푸시
-git push -u origin master
